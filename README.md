@@ -8,7 +8,10 @@ In 1994, DeadLine BBS ran on a single phone line in Hong Kong: one caller at a t
 
 ## Try it
 
-No build, no install, no server required:
+**▶ Play it live: https://allentell.github.io/deadline-bbs/**
+Source: https://github.com/allentell/deadline-bbs
+
+Or run it locally — no build, no install, no server required:
 
 ```bash
 # Option A: just open the file
@@ -26,13 +29,13 @@ Press **Enter** to skip the dial-up sequence, then use **↑ ↓ + Enter**, numb
 
 | # | Section | What it does |
 |---|---|---|
-| 1 | Message Board | Read/post messages, seeded with fictional 1994–2026 posts, persisted in `localStorage` |
+| 1 | Message Board | Read/post messages with **fully nested threaded replies** (replies to replies render, indented by depth), **text search**, and relative timestamps ("2h ago"); seeded with fictional 1994–2026 posts, persisted in `localStorage` (v1 saves migrate automatically; corrupt saves are validated and repaired, never fatal) |
 | 2 | File Library | Fictional file areas (UTILS / ANSI ART / TEXT / GAMES) with filters and a simulated ZMODEM `[GET]` that downloads a tiny generated `.txt` ghost of each file |
-| 3 | AI SysOp Chat | Talk to GH0STLINE, the SysOp since 1994 — canned/rule-based, 100% on-device, no API, nothing leaves your browser |
-| 4 | Door Game: CODEBREAKER 3000 | Daily deterministic 4-digit code, 8 guesses, exact/close feedback, career score + streak in `localStorage`, plus a scoreless practice mode |
+| 3 | AI SysOp Chat | Talk to GH0STLINE, the SysOp since 1994 — 16 rule-based intents (board history, game rules, how to post, 1994 memories, jokes…), 100% on-device, no API, nothing leaves your browser |
+| 4 | Door Game: CODEBREAKER 3000 | Daily deterministic 4-digit code for **your local day** (new code at your local midnight), 8 guesses, **per-digit ●/◐/○ feedback grid**, a give-up/reveal option, career score + **consecutive-day streak** in `localStorage`, plus a scoreless practice mode with a one-click return to today's code |
 | 5 | About | The Resurrection Log: 1994 → 1999 → 2026 |
 
-Plus: modem handshake boot sequence, ANSI-art banner, full keyboard navigation (G = log off back to boot), sound-free, works fully offline, responsive down to phone widths.
+Plus: modem handshake boot sequence, ANSI-art banner, a **"Last 10 callers"** log on the main menu (fictional, regenerated deterministically each day), full keyboard navigation (G = log off back to boot), sound-free, works fully offline, responsive down to phone widths. Rumour has it something hidden still answers to a magic word…
 
 **All content is fictional** — every caller, post and file was invented for this demo. Nothing is transmitted anywhere; posts and scores live only in your own browser.
 
@@ -48,9 +51,9 @@ The workflow: write the spec → let steering constrain the implementation → b
 
 ## Tech stack
 
-- Vanilla HTML5 / CSS3 / JavaScript — **zero dependencies, zero build step, < 35 KB total**
+- Vanilla HTML5 / CSS3 / JavaScript — **zero dependencies, zero build step, 49 KB total** (all three app files, uncompressed)
 - `localStorage` for message and game persistence (namespaced `dlbbs-*` keys)
-- Deterministic daily game code via an FNV-1a hash of the date — same code worldwide, no server needed
+- Deterministic daily game code via an FNV-1a hash of the date — the same code for every caller in your timezone on the same day; it rolls over at **your local midnight**, so codes may differ between timezones. No server needed
 - Runs from `file://` or any static host
 
 ## License

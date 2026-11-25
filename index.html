@@ -39,7 +39,7 @@
     <!-- Main menu -->
     <nav class="panel menu-panel" aria-label="Main menu">
       <h2 class="panel-title">[ MAIN MENU ]</h2>
-      <ul id="menu" class="menu" role="listbox" aria-label="BBS sections">
+      <ul id="menu" class="menu" role="listbox" aria-label="BBS sections" tabindex="0">
         <li data-section="messages" data-key="1" role="option"><span class="mk">[1]</span> Message Board <span class="menu-note" id="msg-count"></span></li>
         <li data-section="files" data-key="2" role="option"><span class="mk">[2]</span> File Library</li>
         <li data-section="sysop" data-key="3" role="option"><span class="mk">[3]</span> Chat with AI SysOp</li>
@@ -52,6 +52,11 @@
         <div>LEVEL: <span class="c-yellow">NEW CALLER</span></div>
         <div>TIME LEFT: <span id="time-left">∞</span> <span class="dim">(it's 2026, relax)</span></div>
       </div>
+      <div class="caller-log">
+        <h3 class="caller-title">[ LAST 10 CALLERS ]</h3>
+        <ul id="caller-list" class="caller-list"></ul>
+        <p class="hint">One line, one caller at a time. You are #11.</p>
+      </div>
     </nav>
 
     <!-- Content panels -->
@@ -62,8 +67,10 @@
         <div class="toolbar">
           <button class="btn" id="btn-compose" type="button">[P] Post a message</button>
           <button class="btn btn-dim" id="btn-reseed" type="button">Reset to seed posts</button>
+          <label class="search-label">Search <input id="msg-search" type="search" maxlength="60" placeholder="handle, subject, text…" aria-label="Search messages"></label>
         </div>
         <form id="compose" class="compose hidden">
+          <p id="reply-note" class="reply-note hidden">Replying to <span id="reply-target"></span> <button class="btn btn-dim" type="button" id="btn-cancel-reply">Not a reply</button></p>
           <label>Handle <input id="f-handle" maxlength="20" required placeholder="e.g. MODEM_MARY"></label>
           <label>Subject <input id="f-subject" maxlength="60" required placeholder="Subject line"></label>
           <label>Message <textarea id="f-body" rows="4" maxlength="600" required placeholder="Type like it's 1994…"></textarea></label>
@@ -72,6 +79,9 @@
         </form>
         <ul id="msg-list" class="msg-list"></ul>
         <article id="msg-view" class="msg-view hidden"></article>
+        <div id="msg-actions" class="toolbar hidden">
+          <button class="btn" id="btn-reply" type="button">[R] Reply to this message</button>
+        </div>
       </div>
 
       <!-- FILES -->
@@ -101,15 +111,16 @@
           <input id="chat-input" autocomplete="off" maxlength="200" placeholder="Ask about files, the door game, 1994, or type HELP" aria-label="Message to SysOp">
           <button class="btn" type="submit">Send</button>
         </form>
-        <p class="hint">Rule-based, on-device, no API and no data leaves your browser. Try: HELP · FILES · GAME · MODEM · HELLO</p>
+        <p class="hint">Rule-based, on-device, no API and no data leaves your browser. Try: HELP · HISTORY · POST · RULES · MEMORIES · JOKE · FILES · GAME · MODEM · HELLO</p>
       </div>
 
       <!-- DOOR GAME -->
       <div id="sec-door" class="section hidden">
         <h2 class="panel-title">[ DOOR GAME — CODEBREAKER 3000 ]</h2>
-        <p>The SysOp locks a <strong>4-digit code</strong> (digits may repeat) every day at midnight.
+        <p>The SysOp locks a <strong>4-digit code</strong> (digits may repeat) every day at <strong>your local midnight</strong> —
+        so your code may differ from a caller's in another timezone.
         You have <strong>8 guesses</strong>. Feedback: <span class="c-green">● exact</span> = right digit, right place ·
-        <span class="c-yellow">◐ close</span> = right digit, wrong place.</p>
+        <span class="c-yellow">◐ close</span> = right digit, wrong place · <span class="dim">○ miss</span>.</p>
         <div id="door-status" class="door-status"></div>
         <ul id="guess-list" class="guess-list"></ul>
         <form id="guess-form" class="chat-form">
@@ -117,6 +128,8 @@
           <input id="guess-input" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{4}" placeholder="1234" aria-label="Your 4 digit guess">
           <button class="btn" type="submit">Guess</button>
           <button class="btn btn-dim" type="button" id="btn-practice">Practice round</button>
+          <button class="btn btn-dim" type="button" id="btn-giveup">Give up / reveal</button>
+          <button class="btn btn-dim hidden" type="button" id="btn-daily">↩ Back to today's code</button>
         </form>
         <div id="door-score" class="status-box"></div>
       </div>
@@ -130,9 +143,22 @@
           <p><span class="c-green">2026.</span> For <strong>Kiroween — Resurrection</strong>, the board is rebuilt as a static web app: same menus, same rituals, same SysOp attitude — no modem, no phone bill, works offline.</p>
           <p>Built with Kiro (specs, steering and hooks live in the <code>/.kiro</code> folder of the repo). Plain HTML/CSS/JS, zero dependencies, zero backend, zero tracking. All names, posts and files are fictional.</p>
           <p class="dim">Dead tech never dies. It just waits for someone to call back.</p>
+          <p class="dim">Rumour has it a magic word from the adventure-game days still works on this board… and that the old cheat codes never really died.</p>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Hidden screen (you didn't hear it from us) -->
+  <div id="egg" class="egg hidden" role="dialog" aria-modal="true" aria-label="A hidden screen">
+    <pre class="egg-art" aria-hidden="true"><span class="c-magenta">        .  *  .     *     .        *     .</span>
+<span class="c-cyan">   *        ╔══════════════════════╗        *</span>
+<span class="c-cyan">       .    ║</span><span class="c-yellow">   ✦  THE GROTTO  ✦   </span><span class="c-cyan">║   .</span>
+<span class="c-cyan">  *         ╚══════════════════════╝</span>
+<span class="c-magenta">      .    *      .        *        .    *</span></pre>
+    <p class="egg-text">GH0STLINE &gt; Well well. You said the word / you knew the code.<br>
+    This corner of the board was never on any menu — in 1994 it was where the regulars hid the good ANSI art and the better gossip. Consider yourself a regular now.</p>
+    <button id="egg-close" class="btn" type="button">[ENTER] Return to the board</button>
   </div>
 
   <footer class="footer">

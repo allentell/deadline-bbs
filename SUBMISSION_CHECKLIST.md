@@ -2,6 +2,7 @@
 
 Project: **DeadLine BBS** · Category: **Resurrection**
 ⏰ **Submission deadline: Dec 4, 2026, 14:00 Pacific = Dec 5, 2026, 06:00 Hong Kong time.** Do not cut this close — aim to submit by Dec 4 evening HKT.
+🔗 **Live app: https://allentell.github.io/deadline-bbs/** · **Repo: https://github.com/allentell/deadline-bbs**
 
 ## Already done (in this folder)
 - [x] Working app: `index.html` + `css/style.css` + `js/app.js` (boot sequence, menu, message board, file library, AI SysOp, daily door game)
@@ -10,14 +11,15 @@ Project: **DeadLine BBS** · Category: **Resurrection**
 - [x] MIT `LICENSE`
 
 ## Allen — accounts & credits (do first)
-- [ ] Register / sign in on **Devpost** and register for the Kiroween 2026 hackathon
-- [ ] Create a **Kiro account** (if you don't have one) and actually open/use Kiro on this project — the `/.kiro` folder should reflect real usage
-- [ ] **Request the 4,000 Kiro credits by Dec 1, 2026, 12:00 pm Pacific (= Dec 2, 2026, 04:00 Hong Kong time)** — this deadline is *before* the submission deadline, don't miss it
+- [x] Register / sign in on **Devpost** and register for the Kiroween 2026 hackathon — done 2026-11-25 (account: allentell)
+- [x] Create a **Kiro account** — done 2026-11-25
+- [ ] Actually open/use Kiro on this project — the `/.kiro` folder should reflect real usage (a real Kiro session + commit; rules allow disqualification for insufficient Kiro use)
+- [x] **Request the 4,000 Kiro credits** — submitted 2026-11-25, ahead of the Dec 1, 2026, 12:00 pm Pacific deadline (= Dec 2, 2026, 04:00 Hong Kong time); awaiting the approval email (credits must be redeemed by Dec 4, 2026 and expire Dec 31, 2026)
 
 ## Allen — publish
-- [ ] Create a **public GitHub repository** and push this whole folder, confirming `/.kiro` is at the repo root and the MIT LICENSE is included
-- [ ] Deploy to static hosting (GitHub Pages is simplest: Settings → Pages → deploy from `main`, root) and confirm the **functional app URL** loads, boots, and the door game plays
-- [ ] Test the live URL once in a private/incognito window (localStorage starts clean — seed posts and the daily code should appear)
+- [x] Create a **public GitHub repository** and push this whole folder, confirming `/.kiro` is at the repo root and the MIT LICENSE is included — https://github.com/allentell/deadline-bbs
+- [x] Deploy to static hosting (GitHub Pages: deploy from `main`, root) and confirm the **functional app URL** loads, boots, and the door game plays — https://allentell.github.io/deadline-bbs/
+- [x] Test the live URL with a clean profile (localStorage starts clean — seed posts and the daily code appear) — verified on the live URL 2026-11-25
 
 ## Allen — demo video (< 3 minutes)
 Suggested script (~2:30):
@@ -28,7 +30,7 @@ Suggested script (~2:30):
 5. (1:40) AI SysOp — type `HELP`, then ask about the modem; stress: rule-based, offline, no API
 6. (2:00) Door game — make 2–3 CODEBREAKER guesses, show ●/◐ feedback and the career score
 7. (2:25) Close on the About screen: "Dead tech never dies — Resurrection category, built spec-first with Kiro; the /.kiro folder is in the repo."
-- [ ] Upload to **YouTube** (public or unlisted per Devpost rules) and copy the link
+- [ ] Upload to **YouTube** — the video must be **publicly visible** (the official Kiroween rules require a public video; unlisted does not qualify) — and copy the link
 
 ## Allen — submit on Devpost
 - [ ] Project name: DeadLine BBS — Resurrected 1994
