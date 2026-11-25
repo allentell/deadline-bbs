@@ -6,8 +6,17 @@ const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const store = {
   get(k, fallback){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; } },
-  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ noteStorageFailure(); } }
 };
+/* If localStorage is full or blocked, writes vanish — say so once per
+   session, in-fiction, in the menu status box, instead of letting posts
+   and scores disappear without a word. */
+let storageWarned = false;
+function noteStorageFailure(){
+  if (storageWarned) return; storageWarned = true;
+  const el = document.querySelector("#storage-note");
+  if (el) el.classList.remove("hidden");
+}
 /* A corrupt saved state must never brick the board: initial render calls are
    wrapped so one bad key degrades that module instead of killing boot. */
 function safeInit(fn){ try{ fn(); }catch(e){} }
@@ -61,7 +70,12 @@ const BOOT_LINES = [
   ""
 ];
 let bootDone = false, bootTimers = [];
+function prefersReducedMotion(){
+  try{ return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; }
+}
 function runBoot(){
+  /* Callers who prefer reduced motion skip the dial-up theatre entirely. */
+  if (prefersReducedMotion()){ finishBoot(); return; }
   const log = $("#boot-log"); log.textContent = "";
   BOOT_LINES.forEach((line, i)=>{
     bootTimers.push(setTimeout(()=>{ log.textContent += line + "\n"; }, 260*i + 200));
@@ -75,6 +89,24 @@ function finishBoot(){
   $("#terminal").classList.remove("hidden");
   selectMenu(0, true);
   $("#menu").focus?.();
+}
+/* "G" logoff, in-page: hang up and redial without a page reload. What lives
+   in localStorage (posts, career score, today's game) is the board's memory
+   and survives; only the live call resets — chat, open message, compose. */
+function resetSession(){
+  bootTimers.forEach(clearTimeout); bootTimers = [];
+  bootDone = false;
+  if (eggOpen) hideEgg();
+  seedChat();
+  fallbackIdx = 0;
+  currentMsg = null; setReplyTo(null);
+  $("#compose").classList.add("hidden");
+  $("#msg-view").classList.add("hidden");
+  $("#msg-actions").classList.add("hidden");
+  newGame(false);
+  $("#terminal").classList.add("hidden");
+  $("#boot").classList.remove("hidden");
+  runBoot();
 }
 $("#boot-skip").addEventListener("click", finishBoot);
 document.addEventListener("keydown", e=>{
@@ -115,21 +147,29 @@ safeInit(renderCallers);
 /* ---------- Menu navigation ---------- */
 const menuItems = $$("#menu li");
 let menuIndex = 0;
-function selectMenu(i, open=false){
+function selectMenu(i, open=false, viaKeyboard=false){
   menuIndex = (i + menuItems.length) % menuItems.length;
   menuItems.forEach((li, idx)=>{
     li.classList.toggle("selected", idx===menuIndex);
     li.setAttribute("aria-selected", idx===menuIndex ? "true":"false");
   });
-  if (open) openSection(menuItems[menuIndex].dataset.section);
+  if (open) openSection(menuItems[menuIndex].dataset.section, viaKeyboard);
 }
-function openSection(name){
+function openSection(name, viaKeyboard=false){
   $$(".section").forEach(s=>s.classList.add("hidden"));
   const el = $("#sec-"+name); if(el) el.classList.remove("hidden");
   const idx = menuItems.findIndex(li=>li.dataset.section===name);
   if (idx>=0) selectMenu(idx,false);
-  if (name==="sysop") $("#chat-input").focus();
-  if (name==="door") $("#guess-input").focus();
+  /* Announce the section change for screen-reader callers. */
+  const live = $("#sr-status");
+  if (live && el){ const t = el.querySelector(".panel-title"); live.textContent = t ? "Now showing: " + t.textContent.trim() : ""; }
+  /* Only a keyboard caller gets auto-focus into the section's input — a
+     tap/click caller on a phone shouldn't get the on-screen keyboard
+     popping up just for looking at a section. */
+  if (viaKeyboard){
+    if (name==="sysop") $("#chat-input").focus();
+    if (name==="door") $("#guess-input").focus();
+  }
 }
 menuItems.forEach((li, idx)=>{
   li.addEventListener("click", ()=>selectMenu(idx, true));
@@ -150,9 +190,9 @@ document.addEventListener("keydown", e=>{
   if (tag==="button" || tag==="a" || ae?.getAttribute?.("role")==="button") return;
   if (e.key==="ArrowDown"){ e.preventDefault(); selectMenu(menuIndex+1,false); }
   else if (e.key==="ArrowUp"){ e.preventDefault(); selectMenu(menuIndex-1,false); }
-  else if (e.key==="Enter"){ selectMenu(menuIndex,true); }
-  else if (/^[1-5]$/.test(e.key)){ const i=Number(e.key)-1; selectMenu(i,true); }
-  else if (e.key.toLowerCase()==="g"){ location.reload(); }
+  else if (e.key==="Enter"){ selectMenu(menuIndex,true,true); }
+  else if (/^[1-5]$/.test(e.key)){ const i=Number(e.key)-1; selectMenu(i,true,true); }
+  else if (e.key.toLowerCase()==="g"){ resetSession(); }
   else if (e.key.toLowerCase()==="p" && !$("#sec-messages").classList.contains("hidden")){ toggleCompose(true); }
 });
 
@@ -191,7 +231,7 @@ function relTime(ts){
   const mo = Math.floor(d/30); if (mo < 12) return mo + "mo ago";
   return Math.floor(mo/12) + "y ago";
 }
-let msgFilter = "", currentMsg = null, replyTo = null;
+let msgFilter = "", currentMsg = null, replyTo = null, postSeq = 0;
 function msgMatches(m, q){
   return !q || (m.handle + " " + m.subject + " " + m.body).toLowerCase().includes(q);
 }
@@ -275,7 +315,7 @@ $("#compose").addEventListener("submit", e=>{
   const msgs = getMessages();
   const now = new Date();
   msgs.push({
-    id: "u"+Date.now(), handle: $("#f-handle").value.trim().toUpperCase() || "ANON",
+    id: "u"+Date.now()+"-"+(++postSeq), handle: $("#f-handle").value.trim().toUpperCase() || "ANON",
     subject: $("#f-subject").value.trim(), body: $("#f-body").value.trim(),
     date: localDay(now), ts: now.getTime(),
     parentId: replyTo ? replyTo.id : null
@@ -348,7 +388,11 @@ function sysopReply(text){
   for (const [re, reply] of SYSOP_RULES) if (re.test(text)) return reply;
   return SYSOP_FALLBACK[fallbackIdx++ % SYSOP_FALLBACK.length];
 }
-chatLine("GH0STLINE >", "Carrier detected, caller. I'm the SysOp — rule-based, offline, and awake since 1994. Type HELP.", "who-sysop");
+function seedChat(){
+  $("#chat-log").innerHTML = "";
+  chatLine("GH0STLINE >", "Carrier detected, caller. I'm the SysOp — rule-based, offline, and awake since 1994. Type HELP.", "who-sysop");
+}
+seedChat();
 $("#chat-form").addEventListener("submit", e=>{
   e.preventDefault();
   const input = $("#chat-input"); const text = input.value.trim(); if(!text) return;
@@ -387,7 +431,7 @@ function newGame(practice=false){
   const restore = !practice && savedOk && saved.day===daily.day;
   game = {
     practice, day: daily.day,
-    code: practice ? String(Math.floor(1000+Math.random()*9000)) : daily.code,
+    code: practice ? String(Math.floor(Math.random()*10000)).padStart(4, "0") : daily.code,
     guesses: restore ? saved.guesses.slice(0, 8) : [],
     won: restore ? !!saved.won : false,
     over: restore ? !!saved.over : false,
@@ -487,8 +531,19 @@ let eggOpen = false;
 const KONAMI = ["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];
 let keyBuf = [];
 function showEgg(){ eggOpen = true; $("#egg").classList.remove("hidden"); $("#egg-close").focus(); }
-function hideEgg(){ eggOpen = false; $("#egg").classList.add("hidden"); }
+function hideEgg(){ eggOpen = false; $("#egg").classList.add("hidden"); $("#menu").focus?.(); }
 $("#egg-close").addEventListener("click", hideEgg);
+/* The Grotto is modal: Tab cycles inside it while it's open — the terminal
+   behind it stays untouched until the caller returns to the board. */
+document.addEventListener("keydown", e=>{
+  if (!eggOpen || e.key !== "Tab") return;
+  const items = $$("button, [href], input, textarea, [tabindex]:not([tabindex='-1'])", $("#egg")).filter(el=>!el.disabled);
+  if (!items.length) return;
+  const first = items[0], last = items[items.length-1];
+  if (!items.includes(document.activeElement)){ e.preventDefault(); first.focus(); }
+  else if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
 document.addEventListener("keydown", e=>{
   if (!bootDone || eggOpen) return;
   const tag = (document.activeElement?.tagName||"").toLowerCase();
