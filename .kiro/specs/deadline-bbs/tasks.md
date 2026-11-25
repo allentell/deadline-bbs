@@ -24,6 +24,16 @@
 - [x] 25. v1.2: global shortcuts ignore Ctrl/Meta/Alt and stand down when focus is on a button/link/message item (no double-fire; Grotto Enter/Escape close checked before the guard)
 - [x] 26. v1.2: main menu listbox focusable (tabindex) so post-boot focus lands on it; --dim brightened to #8ba184 for WCAG AA on the selected menu item (5.33:1)
 - [x] 27. v1.2 verification: suite extended with regression tests for tasks 20–26 plus the audit's six CODEBREAKER scoring worked examples (69 checks, all passing)
+- [x] 28. v1.3 final polish (AUDIT.md N1): `prefers-reduced-motion` respected — JS skips the timed boot straight to the terminal, CSS media query kills animation/transition and hides the CRT overlay
+- [x] 29. v1.3 (N2): the Grotto is a real modal — Tab is trapped inside while open, focus returns to the main menu on close
+- [x] 30. v1.3 (N4): a failed localStorage write surfaces a one-line in-fiction hint in the status box (once per session) instead of posts/scores vanishing silently
+- [x] 31. v1.3 (N5): file library table wrapped in a keyboard-focusable horizontal scroll region — no more overflow on narrow phones
+- [x] 32. v1.3 (N6): `.btn` vertical padding bumped to 10px so tap targets are ≥44px tall
+- [x] 33. v1.3 (N7): `overflow-wrap:anywhere` on message list items, message view and chat lines — long unbroken strings can't break the layout
+- [x] 34. v1.3 (N8): chat/door inputs auto-focus only when the section was opened from the keyboard, not on tap/click
+- [x] 35. v1.3 (N9): "G" logoff is an in-page `resetSession()` (timers cleared, chat reseeded, boot re-runs) — no more `location.reload()`
+- [x] 36. v1.3 (N10/N11/N12): post IDs get a collision-proof sequence suffix; section changes announced via a visually-hidden `aria-live` region; practice codes drawn from 0000–9999 like daily codes (leading zeros allowed)
+- [x] 37. v1.3 verification: regression tests added for N1, N2, N4, N8, N9, N10, N12 plus static checks for N5, N6, N7, N9, N11 (91 checks, all passing); N3 verified already fixed in v1.2 (score renders via textContent)
 - [x] 11. (Allen) Push to public GitHub repo with MIT LICENSE and /.kiro at root — done 2026-11-25: https://github.com/allentell/deadline-bbs
 - [x] 12. (Allen) Deploy to static hosting and confirm the live URL — done 2026-11-25: https://allentell.github.io/deadline-bbs/
 - [ ] 13. (Allen) Record <3 min YouTube demo (publicly visible, per the official rules) and submit on Devpost before the deadline
