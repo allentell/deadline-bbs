@@ -29,5 +29,5 @@ js/app.js       — all behaviour, organised in commented modules
 
 ## Correctness notes
 - CODEBREAKER scoring: exact matches are removed first, then close matches consume digits from the remaining pool, so repeated-digit codes/guesses score correctly.
-- Daily determinism: same date → same code on any machine (hash is pure, no RNG, no timezone-dependent seed beyond the ISO date string).
+- Daily determinism: same **player-local** date → same code on any machine in that timezone (hash is pure, no RNG). The day key is the caller's local `YYYY-MM-DD`, so the code rolls over at the player's local midnight and may differ between timezones — the UI copy says exactly that.
 - Boot skip is idempotent (`bootDone` guard + timer cleanup) so mashing Enter can't double-initialise.

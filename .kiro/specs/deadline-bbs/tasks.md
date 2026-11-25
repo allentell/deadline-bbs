@@ -10,6 +10,20 @@
 - [x] 8. About / Resurrection Log section and footer
 - [x] 9. Responsive pass (single-column layout, file table trims on narrow screens) and focus-visible styling
 - [x] 10. Verify locally: JS syntax check, static-serve + curl smoke test, headless DOM check of sections/boot/game
-- [ ] 11. (Allen) Push to public GitHub repo with MIT LICENSE and /.kiro at root
-- [ ] 12. (Allen) Deploy to static hosting and confirm the live URL
-- [ ] 13. (Allen) Record <3 min YouTube demo and submit on Devpost before the deadline
+- [x] 14. Caller log: "Last 10 callers" panel, fictional handles/speeds/times, deterministic per day (date-seeded)
+- [x] 15. Message board v1.1: reply threading (parentId, indented nested render), text search/filter, relative timestamps; v1 saves migrate gracefully (parentId→null, ts from date)
+- [x] 16. AI SysOp: +6 intents (history, game rules, how-to-post, upload, 1994 memories, joke) — rule table now 16 intents
+- [x] 17. CODEBREAKER polish: per-digit guess-history grid (●/◐/○ per digit + counts), give up / reveal option ending the game scoreless and persisted
+- [x] 18. Easter egg: Konami sequence or typing "xyzzy" opens the hidden Grotto screen; About carries only a vague rumour
+- [x] 19. v1.1 verification: node --check + headless jsdom suite in test/run-tests.mjs (41 checks: boot, migration, reply, search, sysop intents, door grid/give-up/reload, egg)
+- [x] 20. v1.2 audit fixes (from AUDIT.md): nested replies render recursively with depth-capped indentation — no saved reply is dropped
+- [x] 21. v1.2: daily code, post dates and caller log keyed to the player's local day; copy corrected everywhere (local midnight, may differ by timezone; "same code worldwide" claim removed)
+- [x] 22. v1.2: defensive persisted-state validation — normalizeMessages drops/repairs bad entries and never throws, score fields coerced to numbers and rendered via textContent, initial renders wrapped so a corrupt key degrades instead of bricking boot
+- [x] 23. v1.2: streak counts consecutive days only (win after a gap restarts at 1)
+- [x] 24. v1.2: "Back to today's code" button returns from a practice round without reload
+- [x] 25. v1.2: global shortcuts ignore Ctrl/Meta/Alt and stand down when focus is on a button/link/message item (no double-fire; Grotto Enter/Escape close checked before the guard)
+- [x] 26. v1.2: main menu listbox focusable (tabindex) so post-boot focus lands on it; --dim brightened to #8ba184 for WCAG AA on the selected menu item (5.33:1)
+- [x] 27. v1.2 verification: suite extended with regression tests for tasks 20–26 plus the audit's six CODEBREAKER scoring worked examples (69 checks, all passing)
+- [x] 11. (Allen) Push to public GitHub repo with MIT LICENSE and /.kiro at root — done 2026-11-25: https://github.com/allentell/deadline-bbs
+- [x] 12. (Allen) Deploy to static hosting and confirm the live URL — done 2026-11-25: https://allentell.github.io/deadline-bbs/
+- [ ] 13. (Allen) Record <3 min YouTube demo (publicly visible, per the official rules) and submit on Devpost before the deadline
