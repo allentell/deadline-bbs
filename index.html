@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeadLine BBS — Resurrected 1994 · Node 852-1994</title>
+<meta name="description" content="DeadLine BBS: a 1990s dial-up bulletin board system resurrected as a modern web app. Kiroween 2026 — Resurrection category.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>▓</text></svg>">
+</head>
+<body>
+<div class="crt" aria-hidden="true"></div>
+
+<!-- ============ BOOT / DIAL-UP SEQUENCE ============ -->
+<section id="boot" class="screen boot-screen" aria-label="Dial-up connection sequence">
+  <pre id="boot-log" class="boot-log" aria-live="polite"></pre>
+  <div class="boot-actions">
+    <button id="boot-skip" class="btn" type="button">Press ENTER / Click to skip ▸</button>
+    <p class="hint">No sound. No real modem. All fiction — just like the good old days, minus the phone bill.</p>
+  </div>
+</section>
+
+<!-- ============ MAIN TERMINAL ============ -->
+<main id="terminal" class="screen terminal hidden" aria-label="DeadLine BBS main terminal">
+  <header class="banner-wrap">
+<pre class="banner" aria-label="DeadLine BBS ANSI banner"><span class="c-cyan">██████╗ ███████╗ █████╗ ██████╗ </span><span class="c-magenta">██╗     ██╗███╗   ██╗███████╗</span>
+<span class="c-cyan">██╔══██╗██╔════╝██╔══██╗██╔══██╗</span><span class="c-magenta">██║     ██║████╗  ██║██╔════╝</span>
+<span class="c-cyan">██║  ██║█████╗  ███████║██║  ██║</span><span class="c-magenta">██║     ██║██╔██╗ ██║█████╗  </span>
+<span class="c-cyan">██║  ██║██╔══╝  ██╔══██║██║  ██║</span><span class="c-magenta">██║     ██║██║╚██╗██║██╔══╝  </span>
+<span class="c-cyan">██████╔╝███████╗██║  ██║██████╔╝</span><span class="c-magenta">███████╗██║██║ ╚████║███████╗</span>
+<span class="c-cyan">╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝ </span><span class="c-magenta">╚══════╝╚═╝╚═╝  ╚═══╝╚══════╝</span></pre>
+    <div class="banner-sub">
+      <span class="c-yellow">▓▒░ DEADLINE BBS ░▒▓</span> · Node 1 · Hong Kong · Est. 1994 — Died 1999 — <span class="c-green">RESURRECTED 2026</span><br>
+      <span class="dim">SysOp: GH0STLINE &nbsp;|&nbsp; 14,400 bps (in spirit) &nbsp;|&nbsp; Callers today: <span id="caller-count">1</span> &nbsp;|&nbsp; <span id="clock"></span></span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Main menu -->
+    <nav class="panel menu-panel" aria-label="Main menu">
+      <h2 class="panel-title">[ MAIN MENU ]</h2>
+      <ul id="menu" class="menu" role="listbox" aria-label="BBS sections">
+        <li data-section="messages" data-key="1" role="option"><span class="mk">[1]</span> Message Board <span class="menu-note" id="msg-count"></span></li>
+        <li data-section="files" data-key="2" role="option"><span class="mk">[2]</span> File Library</li>
+        <li data-section="sysop" data-key="3" role="option"><span class="mk">[3]</span> Chat with AI SysOp</li>
+        <li data-section="door" data-key="4" role="option"><span class="mk">[4]</span> Door Game: CODEBREAKER</li>
+        <li data-section="about" data-key="5" role="option"><span class="mk">[5]</span> About / Resurrection Log</li>
+      </ul>
+      <p class="hint">↑ ↓ to move · ENTER to open · 1–5 shortcuts<br>G = goodnight / log off (back to boot)</p>
+      <div class="status-box">
+        <div>USER: <span class="c-green">GUEST_1994</span></div>
+        <div>LEVEL: <span class="c-yellow">NEW CALLER</span></div>
+        <div>TIME LEFT: <span id="time-left">∞</span> <span class="dim">(it's 2026, relax)</span></div>
+      </div>
+    </nav>
+
+    <!-- Content panels -->
+    <section class="panel content-panel">
+      <!-- MESSAGES -->
+      <div id="sec-messages" class="section">
+        <h2 class="panel-title">[ MESSAGE BOARD — GENERAL ]</h2>
+        <div class="toolbar">
+          <button class="btn" id="btn-compose" type="button">[P] Post a message</button>
+          <button class="btn btn-dim" id="btn-reseed" type="button">Reset to seed posts</button>
+        </div>
+        <form id="compose" class="compose hidden">
+          <label>Handle <input id="f-handle" maxlength="20" required placeholder="e.g. MODEM_MARY"></label>
+          <label>Subject <input id="f-subject" maxlength="60" required placeholder="Subject line"></label>
+          <label>Message <textarea id="f-body" rows="4" maxlength="600" required placeholder="Type like it's 1994…"></textarea></label>
+          <div class="toolbar"><button class="btn" type="submit">Send ▸</button><button class="btn btn-dim" type="button" id="btn-cancel-compose">Cancel</button></div>
+          <p class="hint">Stored only in your browser (localStorage). Fictional demo data — never enter real personal info.</p>
+        </form>
+        <ul id="msg-list" class="msg-list"></ul>
+        <article id="msg-view" class="msg-view hidden"></article>
+      </div>
+
+      <!-- FILES -->
+      <div id="sec-files" class="section hidden">
+        <h2 class="panel-title">[ FILE LIBRARY — ALL AREAS ]</h2>
+        <div class="toolbar" role="group" aria-label="Filter file area">
+          <button class="btn chip active" data-filter="ALL" type="button">ALL</button>
+          <button class="btn chip" data-filter="UTILS" type="button">UTILS</button>
+          <button class="btn chip" data-filter="ART" type="button">ANSI ART</button>
+          <button class="btn chip" data-filter="TEXT" type="button">TEXT</button>
+          <button class="btn chip" data-filter="GAMES" type="button">GAMES</button>
+        </div>
+        <table class="files-table">
+          <thead><tr><th>Filename</th><th>Area</th><th>Size</th><th>DLs</th><th>Description</th><th></th></tr></thead>
+          <tbody id="files-body"></tbody>
+        </table>
+        <p class="hint">Every file is fictional. [GET] downloads a tiny generated .txt “archive” so the ritual still works.</p>
+        <pre id="dl-log" class="dl-log" aria-live="polite"></pre>
+      </div>
+
+      <!-- SYSOP CHAT -->
+      <div id="sec-sysop" class="section hidden">
+        <h2 class="panel-title">[ CHAT WITH THE SYSOP — GH0STLINE ]</h2>
+        <div id="chat-log" class="chat-log" aria-live="polite"></div>
+        <form id="chat-form" class="chat-form">
+          <span class="prompt">YOU &gt;</span>
+          <input id="chat-input" autocomplete="off" maxlength="200" placeholder="Ask about files, the door game, 1994, or type HELP" aria-label="Message to SysOp">
+          <button class="btn" type="submit">Send</button>
+        </form>
+        <p class="hint">Rule-based, on-device, no API and no data leaves your browser. Try: HELP · FILES · GAME · MODEM · HELLO</p>
+      </div>
+
+      <!-- DOOR GAME -->
+      <div id="sec-door" class="section hidden">
+        <h2 class="panel-title">[ DOOR GAME — CODEBREAKER 3000 ]</h2>
+        <p>The SysOp locks a <strong>4-digit code</strong> (digits may repeat) every day at midnight.
+        You have <strong>8 guesses</strong>. Feedback: <span class="c-green">● exact</span> = right digit, right place ·
+        <span class="c-yellow">◐ close</span> = right digit, wrong place.</p>
+        <div id="door-status" class="door-status"></div>
+        <ul id="guess-list" class="guess-list"></ul>
+        <form id="guess-form" class="chat-form">
+          <span class="prompt">CODE &gt;</span>
+          <input id="guess-input" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{4}" placeholder="1234" aria-label="Your 4 digit guess">
+          <button class="btn" type="submit">Guess</button>
+          <button class="btn btn-dim" type="button" id="btn-practice">Practice round</button>
+        </form>
+        <div id="door-score" class="status-box"></div>
+      </div>
+
+      <!-- ABOUT -->
+      <div id="sec-about" class="section hidden">
+        <h2 class="panel-title">[ ABOUT — RESURRECTION LOG ]</h2>
+        <div class="about-text">
+          <p><span class="c-yellow">1994.</span> DeadLine BBS runs on a single phone line in Hong Kong. One caller at a time. If Mum picks up the phone, your download dies.</p>
+          <p><span class="c-yellow">1999.</span> The internet wins. The line is disconnected. The board is declared dead.</p>
+          <p><span class="c-green">2026.</span> For <strong>Kiroween — Resurrection</strong>, the board is rebuilt as a static web app: same menus, same rituals, same SysOp attitude — no modem, no phone bill, works offline.</p>
+          <p>Built with Kiro (specs, steering and hooks live in the <code>/.kiro</code> folder of the repo). Plain HTML/CSS/JS, zero dependencies, zero backend, zero tracking. All names, posts and files are fictional.</p>
+          <p class="dim">Dead tech never dies. It just waits for someone to call back.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <span>DEADLINE BBS v2.6 — A Kiroween 2026 Resurrection</span>
+    <span class="dim">Fictional demo content only · Works offline · Press G to log off</span>
+  </footer>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
