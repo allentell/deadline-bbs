@@ -51,6 +51,7 @@
         <div>USER: <span class="c-green">GUEST_1994</span></div>
         <div>LEVEL: <span class="c-yellow">NEW CALLER</span></div>
         <div>TIME LEFT: <span id="time-left">∞</span> <span class="dim">(it's 2026, relax)</span></div>
+        <div id="storage-note" class="storage-note hidden">⚠ STORAGE OFFLINE — browser storage is unavailable, so posts &amp; scores won't survive a reload.</div>
       </div>
       <div class="caller-log">
         <h3 class="caller-title">[ LAST 10 CALLERS ]</h3>
@@ -94,10 +95,12 @@
           <button class="btn chip" data-filter="TEXT" type="button">TEXT</button>
           <button class="btn chip" data-filter="GAMES" type="button">GAMES</button>
         </div>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="File library table, scrolls sideways on narrow screens">
         <table class="files-table">
           <thead><tr><th>Filename</th><th>Area</th><th>Size</th><th>DLs</th><th>Description</th><th></th></tr></thead>
           <tbody id="files-body"></tbody>
         </table>
+        </div>
         <p class="hint">Every file is fictional. [GET] downloads a tiny generated .txt “archive” so the ritual still works.</p>
         <pre id="dl-log" class="dl-log" aria-live="polite"></pre>
       </div>
@@ -167,6 +170,7 @@
   </footer>
 </main>
 
+<div id="sr-status" class="sr-only" role="status" aria-live="polite"></div>
 <script src="js/app.js"></script>
 </body>
 </html>

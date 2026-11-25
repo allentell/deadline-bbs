@@ -35,7 +35,7 @@ Press **Enter** to skip the dial-up sequence, then use **↑ ↓ + Enter**, numb
 | 4 | Door Game: CODEBREAKER 3000 | Daily deterministic 4-digit code for **your local day** (new code at your local midnight), 8 guesses, **per-digit ●/◐/○ feedback grid**, a give-up/reveal option, career score + **consecutive-day streak** in `localStorage`, plus a scoreless practice mode with a one-click return to today's code |
 | 5 | About | The Resurrection Log: 1994 → 1999 → 2026 |
 
-Plus: modem handshake boot sequence, ANSI-art banner, a **"Last 10 callers"** log on the main menu (fictional, regenerated deterministically each day), full keyboard navigation (G = log off back to boot), sound-free, works fully offline, responsive down to phone widths. Rumour has it something hidden still answers to a magic word…
+Plus: modem handshake boot sequence, ANSI-art banner, a **"Last 10 callers"** log on the main menu (fictional, regenerated deterministically each day), full keyboard navigation (G = log off back to boot — an in-page reset, no reload), sound-free, works fully offline, responsive down to phone widths, and it respects `prefers-reduced-motion` (the dial-up sequence is skipped for callers who ask for stillness). Rumour has it something hidden still answers to a magic word…
 
 **All content is fictional** — every caller, post and file was invented for this demo. Nothing is transmitted anywhere; posts and scores live only in your own browser.
 
@@ -51,7 +51,7 @@ The workflow: write the spec → let steering constrain the implementation → b
 
 ## Tech stack
 
-- Vanilla HTML5 / CSS3 / JavaScript — **zero dependencies, zero build step, 49 KB total** (all three app files, uncompressed)
+- Vanilla HTML5 / CSS3 / JavaScript — **zero dependencies, zero build step, 53 KB total** (all three app files, uncompressed)
 - `localStorage` for message and game persistence (namespaced `dlbbs-*` keys)
 - Deterministic daily game code via an FNV-1a hash of the date — the same code for every caller in your timezone on the same day; it rolls over at **your local midnight**, so codes may differ between timezones. No server needed
 - Runs from `file://` or any static host
