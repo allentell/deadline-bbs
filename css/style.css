@@ -1,6 +1,6 @@
 :root{
   --bg:#0a0e0a; --panel:#0f150f; --panel2:#121a12;
-  --ink:#c8d8c0; --dim:#7a8a74; --green:#4dff6a; --cyan:#3fd9ff;
+  --ink:#c8d8c0; --dim:#8ba184; --green:#4dff6a; --cyan:#3fd9ff;
   --magenta:#ff4dd2; --yellow:#ffd94d; --red:#ff5a4d; --amber:#ffb84d;
   --border:#2a3d2a; --focus:#ffd94d;
   --mono:"Courier New",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -78,10 +78,41 @@ button,input,textarea{font-family:var(--mono);font-size:1rem}
 .chat-form .prompt{color:var(--green)}
 .chat-form input{flex:1;min-width:200px}
 
+/* Caller log */
+.caller-log{margin-top:14px;border-top:1px dashed var(--border);padding-top:10px}
+.caller-title{color:var(--cyan);font-size:.9rem;margin:0 0 8px;letter-spacing:.05em;font-weight:normal}
+.caller-list{list-style:none;margin:0;padding:0;font-size:.82rem}
+.caller-list li{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dotted #1b281b}
+.caller-list .ch{color:var(--ink)} .caller-list .cs{color:var(--yellow)} .caller-list .ct{color:var(--dim)}
+
+/* Message search + threading */
+.search-label{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:.9rem}
+.search-label input{background:#0a0f0a;color:var(--ink);border:1px solid var(--border);border-radius:4px;padding:8px}
+.search-label input:focus{border-color:var(--green);outline:none}
+.msg-list li.msg-reply{margin-left:28px;border-style:dashed}
+.msg-list li.msg-nomatch{display:none}
+.reply-note{margin:0;color:var(--yellow);font-size:.9rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
 /* Door game */
 .guess-list{list-style:none;margin:12px 0;padding:0}
-.guess-list li{padding:6px 10px;border:1px solid var(--border);border-radius:4px;margin-bottom:6px;background:var(--panel2);letter-spacing:.2em}
+.guess-list li{padding:6px 10px;border:1px solid var(--border);border-radius:4px;margin-bottom:6px;background:var(--panel2)}
+.grow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.gnum{color:var(--dim);min-width:2ch}
+.gcell{display:inline-flex;flex-direction:column;align-items:center;min-width:34px;padding:3px 0 2px;
+  border:1px solid var(--border);border-radius:4px;background:#0a0f0a}
+.gcell .gd{font-size:1.05rem;color:#fff;line-height:1.1}
+.gcell .gm{font-size:.8rem;line-height:1.1}
+.gcell.exact{border-color:var(--green)} .gcell.exact .gm{color:var(--green)}
+.gcell.close{border-color:var(--yellow)} .gcell.close .gm{color:var(--yellow)}
+.gcell.miss .gm{color:var(--dim)}
+.gsum{color:var(--dim);font-size:.85rem;margin-left:6px;letter-spacing:.05em}
 .door-status{font-size:1.05rem}
+
+/* Easter egg overlay */
+.egg{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:rgba(5,8,5,.96);padding:24px;text-align:center}
+.egg-art{margin:0;font-size:clamp(.5rem,1.6vw,.85rem);line-height:1.3}
+.egg-text{max-width:560px;color:var(--ink)}
 .about-text p{margin:0 0 12px}
 code{color:var(--yellow)}
 
