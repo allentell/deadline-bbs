@@ -1,0 +1,93 @@
+:root{
+  --bg:#0a0e0a; --panel:#0f150f; --panel2:#121a12;
+  --ink:#c8d8c0; --dim:#7a8a74; --green:#4dff6a; --cyan:#3fd9ff;
+  --magenta:#ff4dd2; --yellow:#ffd94d; --red:#ff5a4d; --amber:#ffb84d;
+  --border:#2a3d2a; --focus:#ffd94d;
+  --mono:"Courier New",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:16px;line-height:1.5}
+.hidden{display:none!important}
+.c-cyan{color:var(--cyan)} .c-magenta{color:var(--magenta)} .c-yellow{color:var(--yellow)}
+.c-green{color:var(--green)} .dim{color:var(--dim)}
+button,input,textarea{font-family:var(--mono);font-size:1rem}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* subtle CRT scanlines — serves the BBS fiction, kept faint for readability */
+.crt{position:fixed;inset:0;pointer-events:none;z-index:50;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);opacity:.35}
+
+.screen{max-width:1120px;margin:0 auto;padding:24px 16px 40px}
+
+/* Boot */
+.boot-screen{min-height:80vh;display:flex;flex-direction:column;justify-content:center}
+.boot-log{white-space:pre-wrap;font-size:1rem;color:var(--green);min-height:320px;margin:0}
+.boot-actions{margin-top:16px}
+.hint{color:var(--dim);font-size:.85rem}
+
+/* Buttons */
+.btn{background:var(--panel2);color:var(--green);border:1px solid var(--border);
+  padding:8px 14px;cursor:pointer;border-radius:4px}
+.btn:hover,.btn:focus-visible{background:#1c2b1c;color:#fff;border-color:var(--green)}
+.btn-dim{color:var(--dim)} .chip.active{background:#1c2b1c;color:var(--yellow);border-color:var(--yellow)}
+
+/* Banner */
+.banner-wrap{text-align:center;margin-bottom:16px}
+.banner{display:inline-block;text-align:left;font-size:clamp(.42rem,1.35vw,.8rem);line-height:1.25;margin:0;overflow-x:auto;max-width:100%}
+.banner-sub{margin-top:8px;font-size:.95rem}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px}
+.panel-title{color:var(--cyan);font-size:1rem;margin:0 0 12px;letter-spacing:.05em}
+.menu{list-style:none;margin:0;padding:0}
+.menu li{padding:10px 10px;border:1px solid transparent;border-radius:4px;cursor:pointer}
+.menu li .mk{color:var(--yellow)}
+.menu li.selected{background:#1c2b1c;border-color:var(--green);color:#fff}
+.menu li.selected::before{content:"▸ ";color:var(--green)}
+.menu-note{color:var(--dim);font-size:.85rem}
+.status-box{margin-top:14px;border-top:1px dashed var(--border);padding-top:10px;font-size:.9rem}
+.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;color:var(--dim);font-size:.85rem}
+
+/* Messages */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.msg-list{list-style:none;margin:0;padding:0}
+.msg-list li{padding:10px;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;cursor:pointer;background:var(--panel2)}
+.msg-list li:hover{border-color:var(--green)}
+.msg-meta{color:var(--dim);font-size:.85rem}
+.msg-subject{color:#fff;font-weight:bold}
+.msg-view{border:1px solid var(--border);border-radius:4px;padding:14px;background:var(--panel2);white-space:pre-wrap}
+.compose{display:grid;gap:10px;margin-bottom:14px}
+.compose label{display:grid;gap:4px;color:var(--dim);font-size:.9rem}
+.compose input,.compose textarea,.chat-form input{background:#0a0f0a;color:var(--ink);border:1px solid var(--border);border-radius:4px;padding:9px}
+.compose input:focus,.compose textarea:focus,.chat-form input:focus{border-color:var(--green);outline:none}
+
+/* Files */
+.files-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.files-table th{color:var(--cyan);text-align:left;border-bottom:1px solid var(--border);padding:6px}
+.files-table td{border-bottom:1px solid #1b281b;padding:6px;vertical-align:top}
+.files-table .fname{color:var(--yellow)}
+.dl-log{color:var(--green);white-space:pre-wrap;min-height:1.4em}
+
+/* Chat */
+.chat-log{border:1px solid var(--border);background:var(--panel2);border-radius:4px;padding:12px;height:320px;overflow-y:auto}
+.chat-line{margin:0 0 10px;white-space:pre-wrap}
+.chat-line .who-sysop{color:var(--magenta);font-weight:bold}
+.chat-line .who-you{color:var(--cyan);font-weight:bold}
+.chat-form{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.chat-form .prompt{color:var(--green)}
+.chat-form input{flex:1;min-width:200px}
+
+/* Door game */
+.guess-list{list-style:none;margin:12px 0;padding:0}
+.guess-list li{padding:6px 10px;border:1px solid var(--border);border-radius:4px;margin-bottom:6px;background:var(--panel2);letter-spacing:.2em}
+.door-status{font-size:1.05rem}
+.about-text p{margin:0 0 12px}
+code{color:var(--yellow)}
+
+@media (max-width:820px){
+  .layout{grid-template-columns:1fr}
+  .files-table{font-size:.8rem}
+  .files-table th:nth-child(3),.files-table td:nth-child(3){display:none}
+  .banner{font-size:.38rem}
+}
